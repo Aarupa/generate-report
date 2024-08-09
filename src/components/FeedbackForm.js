@@ -1,5 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FaUser, FaEnvelope, FaStar, FaArrowUp, FaCommentDots } from "react-icons/fa";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function FeedbackForm() {
   async function handleSubmit(e) {
@@ -12,7 +14,7 @@ function FeedbackForm() {
     console.log("Serialized form data: ", formDataSerialized);
 
     // Use the GoogleGenerativeAI to generate a report
-    const genAI = new GoogleGenerativeAI("AIzaSyCxu1PvQahgfwQLSVMgmUzgKAFSeApC2c0"); // Replace with your actual API key
+    const genAI = new GoogleGenerativeAI("AIzaSyCxu1PvQahgfwQLSVMgmUzgKAFSeApC2c0"); 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `
@@ -28,7 +30,6 @@ function FeedbackForm() {
     const report = await response.text();
     console.log(report);
 
-    // Append the generated report to the form data
     formData.append("Report", report);
 
     fetch("https://script.google.com/macros/s/AKfycbwzU8nxSL-AYqLjVPBQCEPlRABk10AdEq0az2X8v1X7xx-GwVfTkPzy9DzC1G6HrmEFNA/exec", {
@@ -41,6 +42,16 @@ function FeedbackForm() {
       .then(result => {
         console.log(result);
         formElement.reset();
+        toast.success('Feedback submitted successfully!', {
+          position: 'top-right',
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        });
       })
       .catch(error => console.error('Error:', error));
   }
@@ -120,8 +131,10 @@ function FeedbackForm() {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 }
 
 export default FeedbackForm;
+
